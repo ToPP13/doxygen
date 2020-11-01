@@ -14,17 +14,23 @@ TEST(gtest_version, gtest_version_basic)
 
 TEST(gtest_intToBytes, gtest_intToBytes_basic)
 {
-//    std::vector<long> awaited_res{0, 0, 4, 210};
-
     auto d = int2Bytes(1234);
-    std::vector<int> awaited_res{0, 0, 4, 210};
+    std::vector<uint> awaited_res{0, 0, 4, 210};
     ASSERT_EQ(d,awaited_res);
 }
 
 TEST(gtest_print_ip, gtest_print_ip_basic)
 {
-    std::string output = "";
+
+//    Печать адреса как char(-1)
+//    - Печать адреса как short(0)
+//    - Печать адреса как int(2130706433)
+//    - Печать адреса как long(8875824491850138409)
+
+    std::string output("");
     std::string res = "0.0.4.210";
+    std::string res_short = "4.210";
+    std::string res_char = "255";
 
     int int_test = 1234;
     testing::internal::CaptureStdout();
@@ -32,22 +38,30 @@ TEST(gtest_print_ip, gtest_print_ip_basic)
     output = testing::internal::GetCapturedStdout();
     ASSERT_EQ(output,res);
 
-//    Печать адреса как char(-1)
-//    - Печать адреса как short(0)
-//    - Печать адреса как int(2130706433)
-//    - Печать адреса как long(8875824491850138409)
 
     short short_test(1234);
     testing::internal::CaptureStdout();
     print_ip(short_test);
     output = testing::internal::GetCapturedStdout();
-    ASSERT_EQ(output,res);
+    ASSERT_EQ(output,res_short);
 
     int long_test = 1234;
     testing::internal::CaptureStdout();
     print_ip(long_test);
     output = testing::internal::GetCapturedStdout();
     ASSERT_EQ(output,res);
+
+    char char_test(-1);
+    testing::internal::CaptureStdout();
+    print_ip(char_test);
+    output = testing::internal::GetCapturedStdout();
+    ASSERT_EQ(output,res_char);
+
+    std::string str_test = "trololo";
+    testing::internal::CaptureStdout();
+    print_ip(str_test);
+    output = testing::internal::GetCapturedStdout();
+    ASSERT_EQ(output,str_test);
 
     std::vector<int> vc_test{0,0,4,210};
     testing::internal::CaptureStdout();
@@ -67,20 +81,6 @@ TEST(gtest_print_ip, gtest_print_ip_basic)
     print_ip(tuple_test);
     output = testing::internal::GetCapturedStdout();
     ASSERT_EQ(output,res);
-
 }
 
-
-TEST(gtest_print_ip, gtest_print_ip_val)
-{
-
-    char char_test(-1);
-    print_ip(char_test);
-    short short_test(-1);
-    print_ip(short_test);
-    int int_test(2130706433);
-    print_ip(int_test);
-    long long_test(8875824491850138409);
-    print_ip(long_test);
-}
 

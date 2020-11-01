@@ -5,12 +5,26 @@
 #include <list>
 #include <string>
 #include <tuple>
+#include "type_traits"
 
 int version();
 
 
 #define USE_PRETTY 1
 
+
+template<typename T>
+std::vector<uint> int2Bytes(T paramInt) {
+    unsigned char *p = (unsigned char *) &paramInt;
+    size_t sz = sizeof(T);
+
+    std::vector<uint> arrayOfByte(sz);
+    for (size_t i = 0; i < sz; i++)
+    {
+        arrayOfByte[sz - 1 - i] = static_cast<uint>(p[i]);
+    }
+    return arrayOfByte;
+}
 
 // calculate factorial of int
 template<typename T>
@@ -26,41 +40,23 @@ void print_ip_as_vec(T begin, T end)
     }
 }
 
-//void print_ip(int);
-void print_ip(long);
-
-void print_ip(std::string);
-
-template<typename Container>
+template<typename Container, typename Container::iterator* = nullptr>
 void print_ip(const Container& cont)
 {
     print_ip_as_vec(cont.cbegin(), cont.cend());
-//    for (auto const& x : cont)
-//    {
-//        if (&x != cont.back())
-//        {
-//            std::cout << ".";
-//        }
-//        std::cout << *x;
-//    }
-    //   std::cout << '\n';
-//   for (auto const& x : cont) {
-//      std::cout << x << " ";
-//   }
-//   std::cout << '\n';
 }
 
-//template<typename T>
-//void print_ip(std::list<T> vc)
-//{
-//    print_ip_as_vec(vc.begin(), vc.end());
-//}
 
-//template<typename T>
-//void print_ip(std::vector<T> ls)
-//{
-//    print_ip_as_vec(ls.begin(), ls.end());
-//}
+template<typename T, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+void print_ip(T & val)
+{
+    auto res = int2Bytes(val);
+    print_ip_as_vec(res.begin(), res.end());
+}
+
+void print_ip(std::string & ip);
+
+
 
 //template <typename... T>
 //void foo(int a, std::tuple<T...> TupleTest);
@@ -97,14 +93,3 @@ void print_ip(std::tuple<T...> TupleTest)
     auto to_vec = to_vector(TupleTest);
     print_ip(to_vec);
 }
-
-template<typename Val>
-std::vector<Val> int2Bytes(Val paramInt)
-{
-    unsigned char* p = (unsigned char*)  &paramInt;
-    std::vector<Val> arrayOfByte(4);
-    for (Val i = 0; i < 4; i++)
-        arrayOfByte[3-i] = p[i];
-    return arrayOfByte;
-}
-//std::vector<long> int2Bytes(long paramInt);
