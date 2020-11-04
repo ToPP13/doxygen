@@ -9,8 +9,6 @@
 #include "lib.h"
 
 
-
-
 int main(int, char *[]) {
 
     char test_char(-1);
